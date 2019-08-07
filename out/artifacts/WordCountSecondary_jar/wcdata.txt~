@@ -1,0 +1,4 @@
+I installed a mainline kernel for testing purposes. I would like to set grub to boot from the older kernel by default.
+
+I know I can set the GRUB_DEFAULT=0 setting for the first page of grub but
+how do I set it to boot by default from one kernel in the second page (Advanced page)?
