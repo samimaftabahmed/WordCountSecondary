@@ -1,3 +1,5 @@
+import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
@@ -9,31 +11,27 @@ import java.io.IOException;
 public class WordCountCompositeKey implements WritableComparable<WordCountCompositeKey> {
 
 
-    private IntWritable inputCount;
-    private Text inputKey;
+    private IntWritable inputCount = new IntWritable();
+    private Text inputKey = new Text();
 
 
     public WordCountCompositeKey() {
 
-        this.inputCount = new IntWritable();
-        this.inputKey = new Text();
     }
 
     public WordCountCompositeKey(IntWritable inputCount, Text inputKey) {
-        this.inputCount = inputCount;
-        this.inputKey = inputKey;
+        this.inputCount.set(inputCount.get());
+        this.inputKey.set(inputKey);
     }
 
     @Override
     public int compareTo(WordCountCompositeKey wordCountCompositeKey) {
 
-        int value = inputKey.compareTo(wordCountCompositeKey.getInputKey());
+        return ComparisonChain.start()
+                .compare(inputCount, wordCountCompositeKey.inputCount)
+                .compare(inputKey, wordCountCompositeKey.inputKey)
+                .result();
 
-        if (value != 0) {
-            return -inputCount.compareTo(wordCountCompositeKey.getInputCount());
-        }
-
-        return 0;
     }
 
     @Override
@@ -46,6 +44,20 @@ public class WordCountCompositeKey implements WritableComparable<WordCountCompos
     public void readFields(DataInput in) throws IOException {
         inputCount.readFields(in);
         inputKey.readFields(in);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WordCountCompositeKey that = (WordCountCompositeKey) o;
+        return Objects.equal(inputCount, that.inputCount) &&
+                Objects.equal(inputKey, that.inputKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(inputCount, inputKey);
     }
 
     // getters and setters

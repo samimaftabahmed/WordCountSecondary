@@ -17,7 +17,7 @@ public class WordCountPartitioner extends Partitioner<WordCountCompositeKey, Tex
         } catch (Exception e) {
 
             e.printStackTrace();
-            return (int) Math.random() * numPartitions;
+            return (int) (Math.random() * numPartitions);
         }
 
     }
